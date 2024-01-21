@@ -1,10 +1,14 @@
+import User from "~/server/models/user";
+
 export default defineEventHandler(async (event) => {
-	// ... Do whatever you want here
 	const body = await readBody(event)
 	
+	const user = await User.create({
+		email: body.email,
+		password: body.password
+	})
+	
 	return {
-		user: 'user',
-		token: 'token',
-		refreshToken: ''
+		user
 	}
 })
