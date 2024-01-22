@@ -1,22 +1,48 @@
-import User, {IUser} from "~/server/models/user";
+import {createAccessToken, findUserByEmail} from "~/server/utils/user";
+import bcrypt from "bcrypt";
 
-type Body = IUser & { confirmPassword: string }
+type LoginBody = {
+	email: string
+	password: string
+}
 
 export default defineEventHandler(async (event) => {
-	const body = await readBody<Body>(event)
-	
-	const {
-		password,
-		confirmPassword
-	} = body
-	
-	const user = await User.findOne<IUser>({
-		email: body.email
-	})
+	const { email, password } = await readBody<LoginBody>(event)
 	
 	
+	const user = await findUserByEmail(email)
+	
+	// control if email and password are provided
+	if(!email || !password) {
+		return sendError(event, createError({
+			statusCode: 400,
+			statusMessage: 'Password and email are required'
+		}))
+	}
+	
+	// control if user exists
+	if(!user) {
+		return sendError(event, createError({
+			statusCode: 404,
+			statusMessage: 'User not found.'
+		}))
+	}
+	
+	// control if password is correct
+	const hasSamePassword = bcrypt.compareSync(password, user?.password)
+	if (!hasSamePassword) {
+		return sendError(event, createError({
+			statusCode: 401,
+			statusMessage: 'Email or password are invalid'
+		}))
+	}
+	
+	
+	// create access token
+	const accessToken = createAccessToken(user._id?.toString())
 	
 	return {
-		user
+		user,
+		accessToken
 	}
 })
