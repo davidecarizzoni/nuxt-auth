@@ -15,6 +15,7 @@ const schema = new Schema<IUser>(
 		},
 		password: {
 			type: String,
+			select: false,
 			bcrypt: true
 		},
 		name: {

@@ -1,11 +1,24 @@
-import User from "~/server/models/user";
+import User, {IUser} from "~/server/models/user";
+
+type RegisterBody = IUser & {
+	confirmPassword: string
+}
 
 export default defineEventHandler(async (event) => {
-	const body = await readBody(event)
+	const body = await readBody<RegisterBody>(event)
 	
-	const user = await User.create({
+	const { password, confirmPassword } = body
+	
+	if (password !== confirmPassword) {
+		return sendError(event, createError({
+			statusCode: 400,
+			statusMessage: 'Password and confirm password do not match.'
+		}))
+	}
+	
+	const user = await User.create<IUser>({
 		email: body.email,
-		password: body.password
+		password: hashPassword(body.password),
 	})
 	
 	return {
