@@ -9,6 +9,13 @@ export default defineEventHandler(async (event) => {
 	
 	const { password, confirmPassword } = body
 	
+	if(!password || !confirmPassword) {
+		return sendError(event, createError({
+			statusCode: 400,
+			statusMessage: 'Password and confirm password are required'
+		}))
+	}
+	
 	if (password !== confirmPassword) {
 		return sendError(event, createError({
 			statusCode: 400,
