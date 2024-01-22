@@ -1,6 +1,6 @@
 import User, {IUser} from "~/server/models/user";
 
-type RegisterBody = IUser & {
+export type RegisterBody = IUser & {
 	confirmPassword: string
 }
 
@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
 	
 	const { password, confirmPassword } = body
 	
+	// control if email and password are provided - This is an additional control
 	if(!password || !confirmPassword) {
 		return sendError(event, createError({
 			statusCode: 400,
@@ -16,6 +17,7 @@ export default defineEventHandler(async (event) => {
 		}))
 	}
 	
+	// control if password and confirmPassword are the same
 	if (password !== confirmPassword) {
 		return sendError(event, createError({
 			statusCode: 400,
@@ -23,8 +25,9 @@ export default defineEventHandler(async (event) => {
 		}))
 	}
 	
+	// create user by spread body and hash password
 	const user = await User.create<IUser>({
-		email: body.email,
+		...body,
 		password: hashPassword(body.password),
 	})
 	

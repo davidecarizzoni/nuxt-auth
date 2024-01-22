@@ -1,14 +1,13 @@
 import {createAccessToken, findUserByEmail} from "~/server/utils/user";
 import bcrypt from "bcrypt";
 
-type LoginBody = {
+export type LoginForm = {
 	email: string
 	password: string
 }
 
 export default defineEventHandler(async (event) => {
-	const { email, password } = await readBody<LoginBody>(event)
-	
+	const { email, password } = await readBody<LoginForm>(event)
 	
 	const user = await findUserByEmail(email)
 	
@@ -36,7 +35,6 @@ export default defineEventHandler(async (event) => {
 			statusMessage: 'Email or password are invalid'
 		}))
 	}
-	
 	
 	// create access token
 	const accessToken = createAccessToken(user._id?.toString())
