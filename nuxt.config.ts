@@ -5,6 +5,13 @@ export default defineNuxtConfig({
     mongodbUri: process.env.MONGODB_URI,
     jwtSecret: process.env.JWT_SECRET,
   },
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+  css: ['~/assets/css/main.scss'],
   nitro: {
     plugins: ["~/server/index.ts"],
   },
