@@ -28,7 +28,7 @@ const onClickLogin = async () => {
   <div class="login-page min-h-screen bg-white dark:bg-black">
     <div class="login-card flex-col flex justify-center items-center">
       <div class="title">
-        Inserisci le credenziali
+        Insert your credential
       </div>
       <div class="flex flex-col w-full space-y-4 mt-8">
         <UIInput v-model="user.email" placeholder="Email"/>
@@ -42,7 +42,7 @@ const onClickLogin = async () => {
           class="bg-blue-400 px-4 py-2 rounded-2xl w-[10rem]"
           @click.stop="onClickLogin"
         >
-          Accedi
+          Login
         </button>
     </div>
   </div>
